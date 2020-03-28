@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Covid-19: Simulatore di Epidemia Semplificato - Gabriele Rapino</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="Simulatore semplificato e qualitativo dell'impatto di una epidemia su una popolazione, e degli effetti di mitigazione indotti da misure di social distancing. Sviluppato durante l'epidemia di Covid-19.">
+
+	<meta property="og:locale" content="it_IT" />
+	<meta property="og:type" content="article" />
+	<meta property="og:url" content="https://gabrielerapino.com/episim.html" />
+	<meta property="og:title" content="Covid-19: Simulatore di Epidemia Semplificato" />
+	<meta property="og:description" content="Simulatore semplificato e qualitativo dell'impatto di una epidemia su una popolazione, e degli effetti di mitigazione indotti da misure di social distancing. Sviluppato durante l'epidemia di Covid-19." />
+	<meta property="og:site_name" content="Super Simple Epidemic Simulator" />
+	<meta property="og:image" content="https://www.gabrielerapino.com/it/files/2020/03/Schermata-2020-03-24-alle-14.26.54.png" />
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:description" content="Simulatore semplificato e qualitativo dell'impatto di una epidemia su una popolazione, e degli effetti di mitigazione indotti da misure di social distancing. Sviluppato durante l'epidemia di Covid-19." />
+	<meta name="twitter:title" content="Covid-19: Simulatore di Epidemia Semplificato" />
+	<meta name="twitter:image" content="https://www.gabrielerapino.com/it/files/2020/03/Schermata-2020-03-24-alle-14.26.54.png" />
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+<link rel="stylesheet" type="text/css" href="style.css">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|PT+Serif|Raleway|Roboto&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+
+<script>    
+	$( function() {
+    	$( "#language" ).selectmenu({
+    	
+    		change: function( event, ui ) {
+    			console.log('change' + $("#language .ui-selectmenu-text" ).text());
+
+    			if ( $("#language-cont .ui-selectmenu-text" ).text() == "IT") document.location.href = '/episim.html';
+    			if ( $("#language-cont .ui-selectmenu-text" ).text() == "EN") document.location.href = '/episim-en.html';
+    		}
+
+    	});
+
+	});
+
+</script>
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-KX69S22');</script>
+<!-- End Google Tag Manager -->
+
+</head>
+<body>
+
+<div class="container">
+	<div id="language-cont">
+
+		<p class="language">Language</p>
+   		<select name="language" id="language">
+      			<option selected="selected">IT</option>
+      			<option>EN</option>      
+    		</select>
+	</div>
+
+	<div class="container-internal">		
+
+		<div class = "text">
+			
+				<h1>Covid-19: Simulatore di Epidemia Semplificato</h1>
+				<p><span class="subtitle">by <a href="https://www.linkedin.com/in/gabriele-rapino/?locale=it_IT" target="_new">Gabriele Rapino</a>, 23-3-2020, 1.0</span></p>
+
+				<p>Questo tool simula in maniera semplificata, e a livello puramente qualitativo, la diffusione di una epidemia in una popolazione, e gli effetti di mitigazione indotti da misure di social distancing. L'ho sviluppato durante la terribile pandemia di <strong>Covid-19</strong> che sta travolgendo il mondo, e l'Italia in particolare.</p>
+
+				<p> L'idea di iniziare questo sviluppo è nata leggendo due bellissimi articoli di <a href="https://medium.com/@tomaspueyo/coronavirus-the-hammer-and-the-dance-be9337092b56" target="_new">Tomas Pueyo</a>.</p>
+
+				<p>Per la realizzazione, mi sono ispirato a questi tre magnifici tool: <a href="https://www.washingtonpost.com/graphics/2020/world/corona-simulator/" target="_new">questo di Harry Stevens sul Washington Post</a>, <a href="https://meltingasphalt.com/interactive/outbreak/" target="_new">questo di Kevin Simler</a> e <a href="http://gabgoh.github.io/COVID/index.html" target="_new">questo di Gabriel Goh</a>.
+
+				<div id="faq">
+					<h3>Disclaimer</h3>
+					<div>
+						<p>Non sono un epidemiologo, né un medico. Da quando in Italia è scoppiato questo devastante virus, ho cercato di studiare al meglio delle mie capacità il problema e il <a href="https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology" target="_new">modello SIR</a>, da cui ho preso spunto per questa simulazione; il tool non ha la pretesa di descrivere in maniera accurata l'epidemia di Covid-19 e non è stato validato da persone esperte in materia. Se sei un epidemiologo e hai suggerimenti, se vuoi <a href="mailto:gabriele.rapino@databeat.it">scrivimi</a>.				
+						</p>
+
+					</div>
+					<h3>Perché ho sviluppato questo tool</h3>
+					<div>
+						<p>Intorno al 23 febbraio 2020, è arrivata anche in Italia la devastante pandemia di Covid-19 che sta travolgendo il mondo.</p>
+
+						<p>In poche settimane è cresciuta esponenzialmente nel numero di contagiati, di morti e di persone che hanno sofferto, trascinando milioni di persone in un baratro di angoscia sia per la salute propria e dei propri cari, sia per cosa accadrà in futuro dal punto di vista socio-economico.</p> 
+
+						<p>Personalmente, per il primo mese sono rimasto sostanzialmente in stato di shock.</p>
+
+						<p>Lo shock era dovuto sia all'avvenimento, ma anche al fatto che, in un momento di emergenza in cui era necessario essere coesi e determinati nel trovare il prima possibile la soluzione più giusta, invece vedevo moltissime persone, a tutti i livelli, discutere per giorni e giorni su qualsiasi cosa: il virus è pericoloso, o è come un'influenza? Dobbiamo restare a casa o è meglio continuare a lavorare, altrimenti l'economia crolla? E così via.</p>
+
+						<p>Questa confusione comunicativa ha portato una fetta della popolazione a sottovalutare il problema per diverse settimane, e il loro comportamento, assieme ad un ritardo nelle decisioni di lockdown prese dal governo e ad una applicazione disorganizzata e poco efficace delle stesse decisioni, purtroppo a mio parere ha aggravato enormemente l'impatto in termini di vite umane e economico che questa situazione avrà sul paese.</p>
+
+						<p>Durante queste settimane di angoscia, ho passato le mie sere ad osservare e commentare passivamente <a href="https://www.facebook.com/nonlosono" target="_new">grafici di crescita di contagi e morti</a>, <a href="https://www.facebook.com/Analisi-Numerica-e-Statistica-Dati-Covid-19-105724191041047/" target="_new">e analisi statistiche e previsionali</a>. Precisamente sabato 21, nel momento di massimo picco di morti in Italia (795 o giù di lì), ho provato un senso di rassegnazione, e ho smesso.</p>
+
+						<p>Negli stessi giorni mi sono imbattuto in <a href="https://medium.com/@tomaspueyo/coronavirus-the-hammer-and-the-dance-be9337092b56" target="_new">questa serie di articoli di Tomas Pueyo</a> e ho avuto una sorta di illuminazione: ciascuno di noi può fare una enorme differenza in questa situazione!</p>
+
+						<p>Infatti, Tomas Pueyo ha avuto la capacità di scrivere due articoli di una forza straordinaria, sia emotiva che fattuale. Due articoli estremamente convincenti, che sono stati letti da milioni di utenti in tutto il mondo e che, a mio parere, hanno aiutato a creare, in una fetta dell'opinione pubblica, una forte consapevolezza sulla gravità del problema, su cosa sarebbe giusto fare, e sull'urgenza di farlo il prima possibile. Tomas, con i suoi mezzi, ha dato il suo piccolo contributo a risolvere il problema, a salvare vite umane, a diminuire la sofferenza.</p>
+
+						<p>A quel punto, ho deciso di smettere di osservare passivamente, e provare a dare anche io il mio umile, minuscolo, insignificante contributo di avvicinamento alla soluzione del problema.</p>
+
+						<p>Da qui l'idea di sviluppare questo tool, che spero possa aiutare le persone comuni a capire meglio cosa sta succedendo, perché sono state intraprese certe azioni restrittive e perché è importante rispettarle tutti, in maniera seria.</p>
+
+						<p>Spero che abbia una sua utilità.</p>
+					</div>					
+					<h3>Importante: come si usa ed esempi di risultati</h3>
+					<div>
+						<p><strong>Clicca sul pulsante azzurro</strong>, e segui l'evoluzione dell'epidemia. La curva sottostante mostra l'andamento dei gruppi di persone che compongono la popolazione: potenzialmente contagiabili (puntini azzurri), infetti (rossi), guariti (verdi) e deceduti (neri).</p> 
+
+						<p><strong>I parametri della simulazione sono già impostati</strong> su dei valori iniziali ragionevoli (simili a quelli stimati ad oggi per Covid-19), quindi per provare velocemente ti basta solo cliccare sul pulsante azzurro, e poi scrollare in basso, per vedere i puntini (che rappresentano le persone) muoversi casualmente sullo schermo, entrare in contatto, ed eventualmente contagiarsi; e osservare il grafico con la curva dei gruppi di persone formarsi giorno dopo giorno.</p>
+
+						<p>Con gli slider <strong>puoi modificare i vari parametri della simulazione</strong>: 
+							<ul>
+								<li>numero di persone (per simulare diverse densità di popolazione). <strong>Nota</strong>: consiglio agli utenti normali di non superare le 4000 persone, altrimenti il processo rallenta parecchio. Lascio comunque la possibilità di estendere a 10.000 persone per eventuali analisi statistiche dei dati tabellari riportati da desktop in fondo alla pagina (in questo caso, lasciate andare il processo fino a completamento).</li>
+								<li>barriera est-ovest (per simulare il propagarsi dell'epidemia tra regioni diverse. La barriera con il piccolo passaggio consente di osservare il ritardo geografico / temporale della propagazione)</li>
+								<li>numero di giorni dal contagio alla guarigione / decesso (più sono i giorni, più la malattia è pericolosa, perché il contagiato ha più probabilità di incontrare persone)</li>
+								<li>probabilità di contagio a distanza < 1m (100% vuol dire che ad ogni contatto tra un infetto e un suscettibile avviene un contagio, 50% che un contatto su due genera un contagio, e così via).</li>
+								<li>tasso di letalità sui contagiati</li>
+								<li>percentuale di social distancing (simulato con la percentuale di giorni in cui le persone sono libere di muoversi. 100% -> ogni persona si muove tutti i giorni, 50% -> ogni persona si muove circa un giorno si e un giorno no, e così via) - puoi cambiarla anche durante la simulazione e vedere cosa cambia sull'esito finale</li>
+							</ul>
+						
+						</p>
+						<p>Tutti i parametri, tranne il social distancing (che funziona anche in real-time), hanno effetto solo se modificati prima dell'avvio (o del riavvio) della simulazione.
+						</p>
+
+						<p>Alla fine della simulazione (che avviene quando non ci sono più infetti), sotto il grafico in basso vengono riassunti i <strong>risultati finali</strong> (durata dell'epidemia, % di contagiati sul totale della popolazione suscettibile e % di decessi sul totale della popolazione suscettibile).</p>
+
+						<p>Nella parte bassa della pagina i dati giornalieri sono riportati in forma tabellare (solo su desktop), per consentire una rapida <strong>esportazione dei dati simulati</strong> in tool esterni di modellizzazione e predizione.</p>
+
+						<p><strong>Esempi di risultati:</strong></p>
+
+						<p>Se l'epidemia viene fatta <strong>diffondere in maniera incontrollata</strong> (nessuna misura di isolamento dei primi casi, né di social distancing), l'evoluzione è veloce, viene contagiata quasi la totalità della popolazione e si ha il massimo dei decessi che l'epidemia può provocare (anche per la saturazione del sistema sanitario, non simulato in questo tool):</p>
+						<img src="https://www.gabrielerapino.com/it/files/2020/03/Schermata-2020-03-24-alle-13.29.28.png">
+						<br><br>
+						<p>Se si riesce <strong>rapidamente ad isolare i primi casi</strong> (in questo tool è simulato in maniera semplificata tramite un social distancing molto rigido e rapido), si riesce ad ostacolare in fretta l'epidemia e il numero dei contagiati e dei decessi è minimo:</p>
+						<img src="https://www.gabrielerapino.com/it/files/2020/03/Schermata-2020-03-24-alle-12.55.26.png">
+						<br><br>
+						<p>Se invece <strong>si ritarda nell'isolare i contagiati, ma si applica successivamente un social distancing abbastanza rigido</strong>, si diminuisce il numero dei contagiati e dei decessi rispetto all'evoluzione incontrollata. L'epidemia evolve più lentamente e si esaurisce dopo più tempo:</p>
+						<img src="https://www.gabrielerapino.com/it/files/2020/03/Schermata-2020-03-24-alle-12.54.45.png">
+						<br><br>
+						<p>E' importante notare che <strong>se si applica da subito un social distancing, ma si rilascia prima che l'epidemia sia finita</strong>, ci potrebbe essere il rischio che questa riprenda a diffondersi, e contagi comunque un numero elevato di persone, ma in un tempo molto più lungo:</p>
+						<img src="https://www.gabrielerapino.com/it/files/2020/03/Schermata-2020-03-24-alle-13.02.17.png">
+						<br><br>
+						<p>Si può poi sperimentare con una divisione est-ovest (che simula due zone di uno stesso paese, come potrebbe essere il nord e il sud Italia. La barriera con il piccolo passaggio simula l'effetto della distanza tra le zone; si può sperimentare con la densità abitativa, diminuendo il numero della popolazione; si può sperimentare con la contagiosità (espressa con la probabilità di contagio a distanza < 1m) e con la letalità.</p>						
+
+						<p><strong>Nota</strong>: ovviamente questi dati derivano da una simulazione super-semplificata sviluppata da un non esperto del settore, e non descrivono la realtà dei fatti, così come non sono rappresentativi degli effetti reali generati da ciascuna misura: quindi nessuna decisione o convincimento dovrebbe essere assunto in base a qualsiasi risultato generato da questo tool (sembra ovvio dirlo, ma non si sa mai).
+
+					</div>
+				</div>
+		</div>
+
+	</div>
+
+		<div class="row">
+
+		  <div class="leftColumn-external">
+			<div class="leftColumn">
+				<div class="results">
+
+					<p><span class="results-title"><strong>Stato epidemia</strong>: <span id="title">assente</span></span></p>
+
+					<p>Giorno: <span id="day">0</span></p>		
+					<!--<p>Hour: <span id="hour"></span></p>				-->
+					<p>Popolazione contagiabile: <span id="pop">1000</span></p>			
+					<p><span class="susceptible">Suscettibili: <span id="susc" >1000</span></span></p>
+					<p><span class="infected">Infetti: <span id="inf">0</span></span></p>
+					<p><span class="recovered">Guariti</span>: <span id="rec">0</span></p>
+					<p><span class="deceased">Deceduti: <span id="dec">0</span></span></p>
+					<p><span class="totals">Contagiati totali: <span id="cont">0</span></span></p>
+					<p><span class="R0"><a href="https://en.wikipedia.org/wiki/Basic_reproduction_number" target="_new">R0 stimato</a>: <span id="R0">0</span></span></p>						
+			
+				</div>
+
+				<div class="parameters">
+
+					<a href="javascript:void(0);" id="control">Avvia simulazione</a>
+
+					<form id="form">
+						<label>Popolazione contagiabile (consiglio da 1000 a 2000): </label>
+						<div class="form-field" id="slider-pop">
+							<div id="population" class="ui-slider-handle"></div>
+						</div>
+
+						<div class="form-field">
+
+							<label>Attiva divisione est-ovest (0=off, 1=on): </label>
+							<div class="form-field" id="slider-div">
+								<div id="division" class="ui-slider-handle"></div>
+							</div>
+						</div>						
+
+						<div class="form-field">
+							<label>Infetti iniziali: </label>
+							<div class="form-field" id="slider-beg">
+								<div id="infectedAtBeginning" class="ui-slider-handle"></div>
+							</div>
+						</div>
+						<div class="form-field">
+
+							<label>Giorni per la guarigione / decesso: </label>
+							<div class="form-field" id="slider-rec">
+								<div id="recoveryDays" class="ui-slider-handle"></div>
+							</div>
+						</div>
+
+						<div class="form-field">
+
+							<label>Tasso di letalità: </label>
+							<div class="form-field" id="slider-let">
+								<div id="lethality" class="ui-slider-handle"></div>
+							</div>
+
+						</div>
+
+						<div class="form-field">
+
+							<label>Probabilità di contagio a distanza < 1m: </label>
+							<div class="form-field" id="slider-inf">
+								<div id="infectionProb" class="ui-slider-handle"></div>
+							</div>
+						</div>												
+
+						<div class="form-field">
+
+							<label>% Social distancing (<strong style="color:#222">funziona in real-time</strong>): </label>
+							<div class="form-field" id="slider-days">
+								<div id="daysOut" class="ui-slider-handle"></div>
+							</div>
+						</div>
+										
+					</form>				
+
+				</div>
+			</div>
+		  </div>
+
+		<div class="canvasContainer">
+
+			<div class="canvasContainer-internal">	
+
+				<canvas id="city" width="700" height="526"></canvas>
+
+				<canvas id="chart" width="700" height="300"></canvas>
+				<div class="finalResults" style="display:none"><p><strong>Risultati finali</strong>: l'epidemia è durata <span id="totalDays"></span> giorni. <strong>Contagiati</strong>: <span id="contPerc"></span>% della popolazione contagiabile, <strong>Deceduti</strong>: <span id="decPerc"></span>% della popolazione contagiabile. L'R0 massimo stimato nella fase di crescita è stato: <span id="R0Max"></span> </p></div>
+			<!--<canvas id="city"></canvas>
+
+			<canvas id="chart"></canvas>			-->
+			</div>
+
+		</div>
+
+
+	</div>
+
+	<div class="clearfix"></div>
+
+
+<div class="data" style="display:none;">
+
+	<h1>Risultati</h1>
+
+	<table>
+
+		<tr>
+			<td>
+				Giorno
+			</td>
+			<td>
+				Social distance
+			</td>
+			<td>
+				Suscettibili
+			</td>
+			<td>
+				Infetti
+			</td>
+			<td>
+				Guariti
+			</td>
+			<td>
+				Decessi
+			</td>
+			<td>
+				Totale contagiati
+			</td>				
+		</tr>
+
+	</table>
+
+  </div>
+
+
+</div>
+
+
+<div class="footer">Super Simple Epidemic Simulator di Gabriele Rapino - 23/3/2020<br><br><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Licenza Creative Commons" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />Quest'opera è distribuita con Licenza <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribuzione - Non commerciale 4.0 Internazionale</a>.<br><br><a href="privacy.html">Privacy e cookie policy</a></div>
+
+
+
+
+
+<script src="sim-covid.js"></script>
+
+<script>
+	$( "input[name='population']" ).slider({
+  		animate: "fast"
+	});
+
+
+  $( function() {
+    var handle = $( "#population" );
+    $( "#slider-pop" ).slider({
+      max: 10000,
+      value: 1000,
+      create: function() {
+        handle.text( $( this ).slider( "value" ) );
+      },
+      slide: function( event, ui ) {
+        handle.text( ui.value );
+      }
+    });
+  } );
+
+    $( function() {
+    var handle = $( "#lethality" );
+    $( "#slider-let" ).slider({
+      max: 50,
+      value: 3,
+      create: function() {
+        handle.text( $( this ).slider( "value" ) );
+      },
+      slide: function( event, ui ) {
+        handle.text( ui.value );
+      }
+    });
+  } );
+
+     $( function() {
+    var handle = $( "#daysOut" );
+    $( "#slider-days" ).slider({
+      max: 100,
+      value: 100,
+      create: function() {
+        handle.text( $( this ).slider( "value" ) );
+      },
+      slide: function( event, ui ) {
+        handle.text( ui.value );
+      }
+    });
+  } );
+
+    $( function() {
+    var handle = $( "#infectedAtBeginning" );
+    $( "#slider-beg" ).slider({
+      max: 100,
+      value: 1,
+      create: function() {
+        handle.text( $( this ).slider( "value" ) );
+      },
+      slide: function( event, ui ) {
+        handle.text( ui.value );
+      }
+    });
+  } );
+
+    $( function() {
+    var handle = $( "#infectionProb" );
+    $( "#slider-inf" ).slider({
+      max: 100,
+      value: 80,
+      create: function() {
+        handle.text( $( this ).slider( "value" ) );
+      },
+      slide: function( event, ui ) {
+        handle.text( ui.value );
+      }
+    });
+  } );
+
+     $( function() {
+    var handle = $( "#recoveryDays" );
+    $( "#slider-rec" ).slider({
+      max: 50,
+      value: 21,
+      create: function() {
+        handle.text( $( this ).slider( "value" ) );
+      },
+      slide: function( event, ui ) {
+        handle.text( ui.value );
+      }
+    });
+  } );
+
+   $( function() {
+    var handle = $( "#division" );
+    $( "#slider-div" ).slider({
+      max: 1,
+      value: 0,
+      create: function() {
+        handle.text( $( this ).slider( "value" ) );
+      },
+      slide: function( event, ui ) {
+        handle.text( ui.value );
+      }
+    });
+  } );
+
+
+	$( "#faq" ).accordion({
+      collapsible: true,
+      active: false,
+      heightStyle: "content"
+    });
+
+</script>  
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookie-bar/cookiebar-latest.min.js?forceLang=it&always=1&noGeoIp=1&scrolling=1&privacyPage=https%3A%2F%2Fgabrielerapino.com%2Fprivacy.html"></script>
+
+</body>
+</html>
